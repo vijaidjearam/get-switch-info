@@ -399,3 +399,4 @@ foreach($job in Get-Job){
 }
 
 $result | Out-GridView -PassThru
+Get-Job | Remove-Job
