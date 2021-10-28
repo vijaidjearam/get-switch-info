@@ -706,7 +706,7 @@ if (($networkports_id_temp[0].name -like "Gi*") -or ($networkports_id_temp[0].na
             if ($checklastdigit.Length -eq 1){
             $lastdigit = "0"+$checklastdigit
             $temp[-1] =$lastdigit
-
+           
             $port = ($temp -join '/')
  
 
@@ -718,8 +718,17 @@ else
     write-host "Networkport name nomenclature has been violated so connecting the swith port using their ID" -ForegroundColor Yellow
             $temp=$port
             $temp = $temp.Split('/')
-            $port = $temp[-1]
-      }
+            [string]$checklastdigit = $temp[-1]
+            # Loop that corrects the switchport name from Gi2/0/2 -> Gi2/0/02
+            if ($checklastdigit.Length -eq 1){
+                $lastdigit = "0"+$checklastdigit
+                $temp[-1] =$lastdigit
+                $port = $temp[-1]
+                }
+            else{
+                 $port = $temp[-1]
+                 }
+                }
 if ($port){
     foreach ($temp in $networkports_id_temp)
     {
