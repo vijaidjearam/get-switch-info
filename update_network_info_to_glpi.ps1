@@ -1,4 +1,4 @@
-﻿<# This form was created using POSHGUI.com  a free online gui designer for PowerShell
+<# This form was created using POSHGUI.com  a free online gui designer for PowerShell
 .NAME
     test-winform
 #>
@@ -308,7 +308,7 @@ function Capture-LLDPPacket {
         [String[]]$ComputerName = $env:COMPUTERNAME,
 
         [Parameter(Position=1)] 
-        [Int16]$Duration = 32
+        [Int16]$Duration = 60
     )
 <#
 
@@ -655,7 +655,9 @@ Param
 
 Function get-networkportidofpc(){ 
 param([String]$ComputerName,[String]$comp_mac_address)
-$filter = "/search/computer?criteria[0][field]=1&criteria[0][searchtype]=contains&criteria[0][value]="+$computername+"&criteria[1][link]=AND&criteria[1][field]=31&criteria[1][searchtype]=notequals&criteria[1][value]=3&forcedisplay[0]\=2"
+#$filter = "/search/computer?criteria[0][field]=1&criteria[0][searchtype]=contains&criteria[0][value]="+$computername+"&criteria[1][link]=AND&criteria[1][field]=31&criteria[1][searchtype]=notequals&criteria[1][value]=3&forcedisplay[0]\=2"
+$filter = "/search/computer?criteria[0][field]=1&criteria[0][searchtype]=contains&criteria[0][value]="+$computername+"&criteria[1][link]=AND&criteria[1][field]=31&criteria[1][searchtype]=equals&criteria[1][value]=2&forcedisplay[0]\=2"
+#$filter = "/search/computer?criteria[0][link]=AND&criteria[0][field]=1&criteria[0][searchtype]=contains&criteria[0][value]="+$computername+"&criteria[1][link]=AND&criteria[1][field]=31&criteria[1][searchtype]=equals&criteria[1][value]=2&search=Search&itemtype=Computer&start=0"
 $url = $AppURL+$filter
 $SessionToken = Invoke-RestMethod "$AppURL/initSession" -Method Get -Headers @{"Content-Type" = "application/json";"Authorization" = "user_token $APItoken";"App-Token"=$AppToken}
 $SearchResult = Invoke-RestMethod $url -Headers @{"session-token"=$SessionToken.session_token; "App-Token" = "$AppToken"}
@@ -706,7 +708,7 @@ if (($networkports_id_temp[0].name -like "Gi*") -or ($networkports_id_temp[0].na
             if ($checklastdigit.Length -eq 1){
             $lastdigit = "0"+$checklastdigit
             $temp[-1] =$lastdigit
-           
+
             $port = ($temp -join '/')
  
 
@@ -718,17 +720,8 @@ else
     write-host "Networkport name nomenclature has been violated so connecting the swith port using their ID" -ForegroundColor Yellow
             $temp=$port
             $temp = $temp.Split('/')
-            [string]$checklastdigit = $temp[-1]
-            # Loop that corrects the switchport name from Gi2/0/2 -> Gi2/0/02
-            if ($checklastdigit.Length -eq 1){
-                $lastdigit = "0"+$checklastdigit
-                $temp[-1] =$lastdigit
-                $port = $temp[-1]
-                }
-            else{
-                 $port = $temp[-1]
-                 }
-                }
+            $port = $temp[-1]
+      }
 if ($port){
     foreach ($temp in $networkports_id_temp)
     {
@@ -746,7 +739,9 @@ return $networkports_id_2
 
 Function get-items_devicenetworkcard_id(){ 
 param([String]$ComputerName,[String]$comp_mac_address)
-$filter = "/search/computer?criteria[0][field]=1&criteria[0][searchtype]=contains&criteria[0][value]="+$computername+"&criteria[1][link]=AND&criteria[1][field]=31&criteria[1][searchtype]=notequals&criteria[1][value]=3&forcedisplay[0]\=2"
+#$filter = "/search/computer?criteria[0][field]=1&criteria[0][searchtype]=contains&criteria[0][value]="+$computername+"&criteria[1][link]=AND&criteria[1][field]=31&criteria[1][searchtype]=notequals&criteria[1][value]=3&forcedisplay[0]\=2"
+#$filter = "/search/computer?criteria[0][field]=1&criteria[0][searchtype]=contains&criteria[0][value]="+$computername+"&criteria[1][link]=AND&criteria[1][field]=31&criteria[1][searchtype]=notequals&criteria[1][value]=3&forcedisplay[0]\=2"
+$filter = "/search/computer?criteria[0][field]=1&criteria[0][searchtype]=contains&criteria[0][value]="+$computername+"&criteria[1][link]=AND&criteria[1][field]=31&criteria[1][searchtype]=equals&criteria[1][value]=2&forcedisplay[0]\=2"
 $url = $AppURL+$filter
 $SessionToken = Invoke-RestMethod "$AppURL/initSession" -Method Get -Headers @{"Content-Type" = "application/json";"Authorization" = "user_token $APItoken";"App-Token"=$AppToken}
 $SearchResult = Invoke-RestMethod $url -Headers @{"session-token"=$SessionToken.session_token; "App-Token" = "$AppToken"}
@@ -833,7 +828,7 @@ foreach ($comp in $ComputerName){
         }
     catch{
         write-host "There was issuse in LLDP packet Capture "
-        $debuginfo.Items.Add("$comp :Multiple Network-outlet found with the same name- Please verify in GLPI")
+        $debuginfo.Items.Add("$comp :There was issuse in LLDP packet Capture")
         $debuginfo.SelectedIndex = $debuginfo.Items.Count - 1;
         
         }
