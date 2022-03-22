@@ -5,7 +5,7 @@
     *  Link: https://github.com/PowerShell/PowerShell/releases/tag/v7.2.2
   * Install Powershell Module PSDiscoveryProtocol
   
-  ``` Install-Module -Name PSDiscoveryProtocol ```
+    *   ``` Install-Module -Name PSDiscoveryProtocol ```
   
   * Execute get-switch-info.bat with admin privilege
     * Check the output to see the all the Pcs have right info in the table.
